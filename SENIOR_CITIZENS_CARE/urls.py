@@ -17,6 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from ELDERLY_CARE import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('userSignUp/', views.userRegistration),
+    path('consSignUp/', views.ConsultantRegistration),
+    path('medicalSignup/', views.medicalShopRegistration),
+    path('emailVerify/',views.verify_email),
+    
 ]

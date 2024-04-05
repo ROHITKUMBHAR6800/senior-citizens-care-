@@ -12,6 +12,19 @@ def otp():
     otp = str(randint(100000,999999))
     return otp
 
+def password_gen():
+    pwd = "@"
+    for i in range(2):
+        ch=randint(65,90)
+        pwd+=chr(ch)
+    for i in range(2):
+        ch=randint(97,122)
+        pwd+=chr(ch)
+    for i in range(3):
+        num=randint(0,9)
+        pwd+=str(num)
+    return pwd
+
 
 def send_otp(mail,otp):
     subject = "OTP"
@@ -32,6 +45,22 @@ def send_registration_mail(mail):
     receivers = [mail]
     send_mail(subject, message, sender, receivers)
 
+
+def send_password(mail,pwd):
+    subject = "FORGATE PASSWORD"
+    message = f"This is system generated mail please do not reply and share mail with anyone. Your new passward is {pwd}"
+    sender = "phchol06082001@gmail.com"
+    receivers = [mail]
+    send_mail(subject, message, sender, receivers)
+
+
+def send_password_change(mail):
+    subject = "PASSWORD CHANGE SUCCESSFULLY"
+    message = f"This is system generated mail please do not reply and share mail with anyone. Your passward has been changed successfully"
+    sender = "phchol06082001@gmail.com"
+    receivers = [mail]
+    send_mail(subject, message, sender, receivers)
+    
 
 def userRegistration(request):
     mail = request.POST.get("email")
@@ -177,3 +206,60 @@ def verify_email(request):
                     return JsonResponse("invalid opt signup again")
             except ELDERLY_CARE.models.Consultant.DoesNotExist:
                     return JsonResponse("invalid email id", safe = False)
+
+
+def forgatePassword(request):
+    mail = request.POST.get("email")
+    try:
+        data = Users.objects.get(email = mail)
+        pwd = password_gen()
+        data.password = pwd
+        data.save()
+        send_password(data.email,pwd)
+        return JsonResponse("new password sent to your registered email id")
+    except ELDERLY_CARE.models.Users.DoesNotExist:
+        try:
+            data = Medical_shops.objects.get(email = mail)
+            pwd = password_gen()
+            data.password = pwd
+            data.save()
+            send_password(data.email,pwd)
+            return JsonResponse("new password sent to your registered email id")
+        except ELDERLY_CARE.models.Medical_shops.DoesNotExist:
+            try:
+                data = Consultant.objects.get(email = mail)
+                pwd = password_gen()
+                data.password = pwd
+                data.save()
+                send_password(data.email,pwd)
+                return JsonResponse("new password sent to your registered email id")
+            except ELDERLY_CARE.models.Consultant.DoesNotExist:
+                    return JsonResponse("invalid email id", safe = False)
+            
+
+def changePassword(request):
+    mail = request.POST.get("email")
+    oldPwd = request.POST.get("oldPwd")
+    newPwd = request.POST.get("newPwd")
+    try:
+        data = Users.objects.get(email = mail, password = oldPwd)
+        data.password = newPwd
+        data.save()
+        send_password_change(data.email)
+        return JsonResponse("password change successfully")
+    except ELDERLY_CARE.models.Users.DoesNotExist:
+        try:
+            data = Medical_shops.objects.get(email = mail, password = oldPwd)
+            data.password = newPwd
+            data.save()
+            send_password_change(data.email)
+            return JsonResponse("password change successfully")
+        except ELDERLY_CARE.models.Medical_shops.DoesNotExist:
+            try:
+                data = Consultant.objects.get(email = mail, password = oldPwd)
+                data.password = newPwd
+                data.save()
+                send_password_change(data.email)
+                return JsonResponse("password change successfully")
+            except ELDERLY_CARE.models.Consultant.DoesNotExist:
+                    return JsonResponse("invalid email id or password", safe = False)

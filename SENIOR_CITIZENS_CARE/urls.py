@@ -21,9 +21,13 @@ from ELDERLY_CARE import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path('userSignUp/', views.userRegistration),
     path('consSignUp/', views.ConsultantRegistration),
     path('medicalSignup/', views.medicalShopRegistration),
     path('emailVerify/',views.verify_email),
+    path('forpwd/',views.forgatePassword),
+    path('chanpwd/',views.changePassword),
     
+
 ]

@@ -3,15 +3,19 @@ from django.http import JsonResponse
 from django.core.mail import send_mail
 from random import randint
 import ELDERLY_CARE
-from ELDERLY_CARE.models import Users,Consultant,Medical_shops
+from ELDERLY_CARE.models import Users,Consultant,Medical_shops,medicine_orders,appointment
 from smtplib import SMTPException, SMTPRecipientsRefused
+from django.db.models import Q
 
 # Create your views here.
 
+# 6 digit otp will be created by using folling the function
 def otp():
     otp = str(randint(100000,999999))
     return otp
 
+
+# 8 digit password will be created by using folling the function
 def password_gen():
     pwd = "@"
     for i in range(2):
@@ -26,6 +30,7 @@ def password_gen():
     return pwd
 
 
+# otp will be send by using folling the function and if there any invalid email address then expect block will run
 def send_otp(mail,otp):
     subject = "OTP"
     message = f"This is system generated mail please do not reply and share mail with anyone. This is your {otp}"
@@ -38,6 +43,7 @@ def send_otp(mail,otp):
         return False
     
     
+# this function will be used to send mail-registration successful
 def send_registration_mail(mail):
     subject = "REGISTRATION SUCCESSFUL"
     message = "This is system generated mail please do not reply and share mail with anyone. Your registration is successful"
@@ -46,6 +52,7 @@ def send_registration_mail(mail):
     send_mail(subject, message, sender, receivers)
 
 
+# this function will be used to send mail-forgate password
 def send_password(mail,pwd):
     subject = "FORGATE PASSWORD"
     message = f"This is system generated mail please do not reply and share mail with anyone. Your new passward is {pwd}"
@@ -54,6 +61,7 @@ def send_password(mail,pwd):
     send_mail(subject, message, sender, receivers)
 
 
+# this function will be used to send mail-password change successfully
 def send_password_change(mail):
     subject = "PASSWORD CHANGE SUCCESSFULLY"
     message = f"This is system generated mail please do not reply and share mail with anyone. Your passward has been changed successfully"
@@ -62,6 +70,7 @@ def send_password_change(mail):
     send_mail(subject, message, sender, receivers)
     
 
+# this function will be used to sign up new users
 def userRegistration(request):
     mail = request.POST.get("email")
     if len(Users.objects.filter(email = mail))>0:
@@ -98,6 +107,7 @@ def userRegistration(request):
     return JsonResponse("Now please verify email and otp",safe = False)
 
 
+# this function will be used to sign up new medical shops
 def medicalShopRegistration(request):
     mail = request.POST.get("email")
     if len(Medical_shops.objects.filter(email = mail))>0:
@@ -134,6 +144,7 @@ def medicalShopRegistration(request):
     return JsonResponse("Now please verify email and otp",safe = False)
 
 
+# this function will be used to sign up new consultant
 def ConsultantRegistration(request):
     mail = request.POST.get("email")
     if len(Consultant.objects.filter(email = mail))>0:
@@ -149,7 +160,7 @@ def ConsultantRegistration(request):
     if pwd != cpwd:
         return JsonResponse("both passwords are different ",safe = False)
         
-    consultantRefVar = Users(consultant_name = request.POST.get("consultantName"),
+    consultantRefVar = Consultant(consultant_name = request.POST.get("consultantName"),
                     gender = request.POST.get("gender"),
                     speciality_field = request.POST.get("speciality"),
                     consultant_regi_id = request.POST.get("consRegiId"),
@@ -172,6 +183,7 @@ def ConsultantRegistration(request):
     return JsonResponse("Now please verify email and otp",safe = False)
 
 
+# this function will be used to verify email id
 def verify_email(request):
     mail = request.POST.get("email")
     otp = request.POST.get("otp")
@@ -208,6 +220,7 @@ def verify_email(request):
                     return JsonResponse("invalid email id", safe = False)
 
 
+# this function will be used to genate new password and insert it in perticular record
 def forgatePassword(request):
     mail = request.POST.get("email")
     try:
@@ -237,6 +250,7 @@ def forgatePassword(request):
                     return JsonResponse("invalid email id", safe = False)
             
 
+# this function will be used to change old password by new password
 def changePassword(request):
     mail = request.POST.get("email")
     oldPwd = request.POST.get("oldPwd")
@@ -263,3 +277,57 @@ def changePassword(request):
                 return JsonResponse("password change successfully")
             except ELDERLY_CARE.models.Consultant.DoesNotExist:
                     return JsonResponse("invalid email id or password", safe = False)
+            
+
+# this fuction will fecth all related location medical shops
+def searchMedicalShop(request):
+    loc = request.POST.get("location")
+    data=Medical_shops.objects.filter( 
+                Q(street_no_name = loc) |
+                Q(area_name = loc) |
+                Q(village_city = loc) | 
+                Q(tehsil = loc) |
+                Q(district = loc) |
+                Q(state = loc) |
+                Q(country = loc) 
+            )
+    num=1
+    shop_list={}
+    for records in data:
+        shop_list[num]=f"{records.shop_name}, {records.shop_contact_no}, {records.street_no_name}, {records.area_name}, {records.village_city}, {records.tehsil}, {records.district}, {records.state}, {records.country},{records.shop_owner_name}, {records.mobile_no}"
+        num+=1
+    if len(shop_list)>0:
+        return JsonResponse(shop_list)
+    else:
+        return JsonResponse("no result found please provide another location",safe=False)
+    
+
+def medicinesOrder(request):
+    shopId = request.POST.get("shopId")
+    userMail = request.POST.get("userEmail")
+    orderItem = request.POST.get("medicine")
+    itemQuantity = request.POST.get("qaunt")
+    try:
+        shop_data = Medical_shops.objects.get(shop_regi_id = shopId)
+        user_data = Users.objects.get(email = userMail)
+        medOrderRefVar = medicine_orders(
+                    order_item = orderItem,
+                    item_quantity = itemQuantity,
+                    shop_id = shop_data.shop_regi_id,
+                    shop_name = shop_data.shop_name,
+                    shop_contact = shop_data.shop_contact_no,
+                    shop_owner = shop_data.shop_owner_name,
+                    owner_mobile = shop_data.mobile_no,
+                    shop_address = f"{shop_data.street_no_name}, {shop_data.area_name}, {shop_data.village_city}, {shop_data.tehsil}, {shop_data.district}, {shop_data.state}, {shop_data.country}.",
+                    user_name = user_data.user_name,
+                    user_email = userMail,
+                    user_mobile_self = user_data.mobile_self,
+                    user_mobile_family = user_data.mobile_family,
+                    user_address = f"{user_data.home_no_name}, {user_data.street_no_name}, {user_data.area_name}, {user_data.village_city}, {user_data.tehsil}, {user_data.district}, {user_data.state}, {user_data.country}."
+                )
+        medOrderRefVar.save()
+    except:
+        return JsonResponse("invalid credintials",safe=False)
+    
+
+    

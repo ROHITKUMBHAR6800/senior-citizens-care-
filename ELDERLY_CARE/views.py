@@ -354,7 +354,7 @@ def shopAllOrder(request):
     
 
 # This function would provide all orders of the user
-def shopAllOrder(request):
+def userAllOrder(request):
     mail = request.POST.get("shopId") #shopId = shop_regi_id
     try:
         data = medicine_orders.objects.get(order_id = mail)
@@ -467,13 +467,13 @@ def orderSuccessful(request):
         return JsonResponse("invalid order")
 
 
-# if there is medicines anavailable then this function would be used
-def orderAnavailable(request):
+# if there is medicines unavailable then this function would be used
+def orderUnvailable(request):
     orderId = request.POST.get("orderId")
     try:
         data = medicine_orders.objects.get(order_id = orderId)
         if data.order_status == "pending":
-            data.order_status = "anavailable"
+            data.order_status = "unavailable"
             data.save()
             return JsonResponse("changes successful")
         else:
@@ -489,7 +489,7 @@ def orderInprogress(request):
     time = request.POST.get("time")
     try:
         data = medicine_orders.objects.get(order_id = orderId)
-        if data.order_status == "pending" or data.order_status == "anavailable":
+        if data.order_status == "pending" or data.order_status == "unavailable":
             data.order_status = "inprogress"
             data.price = price
             data.delivery_time = time
@@ -500,3 +500,25 @@ def orderInprogress(request):
     except ELDERLY_CARE.models.medicine_orders.DoesNotExist:
         return JsonResponse("invalid order")
     
+
+def searchConsultant(request):
+    loc = request.POST.get("location")
+    
+    data = Consultant.objects.filter( 
+                Q(street_no_name = loc) |
+                Q(area_name = loc) |
+                Q(village_city = loc) | 
+                Q(tehsil = loc) |
+                Q(district = loc) |
+                Q(state = loc) |
+                Q(country = loc) 
+            )
+    num=1
+    shop_list={}
+    for records in data:
+        shop_list[num]=f"{records.shop_name}, {records.shop_contact_no}, {records.street_no_name}, {records.area_name}, {records.village_city}, {records.tehsil}, {records.district}, {records.state}, {records.country},{records.shop_owner_name}, {records.mobile_no}"
+        num+=1
+    if len(shop_list)>0:
+        return JsonResponse(shop_list)
+    else:
+        return JsonResponse("no result found please provide another location",safe=False)   

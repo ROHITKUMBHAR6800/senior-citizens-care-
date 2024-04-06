@@ -28,6 +28,19 @@ urlpatterns = [
     path('emailVerify/',views.verify_email),
     path('forpwd/',views.forgatePassword),
     path('chanpwd/',views.changePassword),
+    path('findShop/',views.searchMedicalShop),
+    path('placeOrd/',views.medicinesOrder),
+    path('userAllOrd/',views.userAllOrder),
+    path('shopAllOrd/',views.shopAllOrder),
+    path('shopOrdView/',views.shopOrderView),
+    path('userOrdView/',views.userOrderView),
+    path('userOrdCan/',views.orderCancelByUser),
+    path('shopOrdCan/',views.orderCancelByShop),
+    path('ordUnavai/',views.orderUnvailable),
+    path('ordInpro/',views.orderInprogress),
+    path('ordSucc/',views.orderSuccessful),
+    # path('/',views.),
+
     
 
 ]

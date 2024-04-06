@@ -21,13 +21,14 @@ from ELDERLY_CARE import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    # general urls
     path('userSignUp/', views.userRegistration),
     path('consSignUp/', views.ConsultantRegistration),
     path('medicalSignup/', views.medicalShopRegistration),
     path('emailVerify/',views.verify_email),
     path('forpwd/',views.forgatePassword),
     path('chanpwd/',views.changePassword),
+    # related to medicines order
     path('findShop/',views.searchMedicalShop),
     path('placeOrd/',views.medicinesOrder),
     path('userAllOrd/',views.userAllOrder),
@@ -39,6 +40,17 @@ urlpatterns = [
     path('ordUnavai/',views.orderUnvailable),
     path('ordInpro/',views.orderInprogress),
     path('ordSucc/',views.orderSuccessful),
+    # related to appointment
+    path('findCons/',views.searchConsultant),
+    path('makeAppo/',views.makeAppointment),
+    path('userAllAppo/',views.userAllAppointment),
+    path('consAllAppo/',views.consultantAllAppointment),
+    path('consAppoView/',views.consultantAppointmentView),
+    path('userAppoView/',views.userAppointmentView),
+    path('userAppoCan/',views.appointmentCancelByUser),
+    path('consappoCan/',views.appointmentCancelByHospital),
+    path('scheAppo/',views.scheduleAppointment),
+    path('appoSucc/',views.appointmentSuccessful),
     # path('/',views.),
 
     

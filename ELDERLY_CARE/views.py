@@ -756,7 +756,7 @@ def appointmentCancelByUser(request):
     
 
 # shops can cancel oreder by using this fuction
-def orderCancelByShop(request):
+def appointmentCancelByHospital(request):
     if request.method == 'POST':
         appointmentId = request.POST.get("appointmentId")
         try:
@@ -773,7 +773,7 @@ def orderCancelByShop(request):
         return JsonResponse(" invalid method",safe = False)
     
 
-# shop can provide required information to user
+# hospital can provide required information to user
 def scheduleAppointment(request):
     if request.method == 'POST':
         appointmentId = request.POST.get("appointmentId")

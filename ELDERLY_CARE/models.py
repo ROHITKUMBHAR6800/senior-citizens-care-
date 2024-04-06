@@ -4,6 +4,7 @@ from django.utils import timezone
 
 # Create your models here.
 
+# model for store data of elderly people
 class Users(models.Model):
 
     email = models.EmailField(primary_key = True)
@@ -26,6 +27,7 @@ class Users(models.Model):
     email_verify = models.CharField(max_length = 10, default = "unverified")
     
 
+# model for store data of consultant
 class Consultant(models.Model):
 
     consultant_regi_id = models.CharField(max_length = 100,primary_key = True)
@@ -50,6 +52,7 @@ class Consultant(models.Model):
     email_verify = models.CharField(max_length = 10, default = "unverified")
 
 
+# model for store data of medical shops
 class Medical_shops(models.Model):
 
     shop_regi_id = models.CharField(max_length = 100,primary_key = True)
@@ -72,6 +75,7 @@ class Medical_shops(models.Model):
     email_verify = models.CharField(max_length = 10, default = "unverified")
 
 
+# model for store data of medicines order made by users
 class medicine_orders(models.Model):
 
     oder_id = models.BigAutoField(primary_key = True)
@@ -94,6 +98,7 @@ class medicine_orders(models.Model):
     user_address = models.CharField(max_length = 300)
     
 
+# model for store data of appointment by elderly people 
 class appointment(models.Model):
 
     user_name = models.CharField(max_length = 100)

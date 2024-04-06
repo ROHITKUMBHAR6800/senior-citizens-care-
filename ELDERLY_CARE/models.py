@@ -74,7 +74,7 @@ class Medical_shops(models.Model):
 
 class medicine_orders(models.Model):
 
-    oder_id = models.BigAutoField(primary_key = True)
+    order_id = models.BigAutoField(primary_key = True)
     order_item = models.CharField(max_length = 100)
     item_quantity = models.IntegerField()
     price = models.IntegerField()

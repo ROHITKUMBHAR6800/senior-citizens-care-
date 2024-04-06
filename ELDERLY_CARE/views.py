@@ -282,7 +282,7 @@ def changePassword(request):
 # this fuction will fecth all related location medical shops
 def searchMedicalShop(request):
     loc = request.POST.get("location")
-    data=Medical_shops.objects.filter( 
+    data = Medical_shops.objects.filter( 
                 Q(street_no_name = loc) |
                 Q(area_name = loc) |
                 Q(village_city = loc) | 
@@ -330,4 +330,173 @@ def medicinesOrder(request):
         return JsonResponse("invalid credintials",safe=False)
     
 
+# This function would provide all orders of the shop
+def shopAllOrder(request):
+    shopId = request.POST.get("shopId") #shopId = shop_regi_id
+    try:
+        data = medicine_orders.objects.get(order_id = shopId)
+        output = {}
+        output["orderId"] = data.order_id
+        output["medicine"] = data.order_item
+        output["quant."] = data.item_quantity
+        output["price"] = data.price
+        output["placedTime"] = data.order_date
+        output["status"] = data.order_status
+        output["deliveryTime"] = data.delivery_time
+        output["name"] = data.shop_name
+        output["shop contact"] = data.shop_contact
+        output["onwer"] = data.shop_owner
+        output["mobile"] = data.owner_mobile
+        output["address"] = data.shop_address
+        return JsonResponse(output)
+    except ELDERLY_CARE.models.medicine_orders.DoesNotExist:
+        return JsonResponse("invalid credintial")
+    
+
+# This function would provide all orders of the user
+def shopAllOrder(request):
+    mail = request.POST.get("shopId") #shopId = shop_regi_id
+    try:
+        data = medicine_orders.objects.get(order_id = mail)
+        output = {}
+        output["orderId"] = data.order_id
+        output["medicine"] = data.order_item
+        output["quant."] = data.item_quantity
+        output["price"] = data.price
+        output["placedTime"] = data.order_date
+        output["status"] = data.order_status
+        output["deliveryTime"] = data.delivery_time
+        output["name"] = data.shop_name
+        output["shop contact"] = data.shop_contact
+        output["onwer"] = data.shop_owner
+        output["mobile"] = data.owner_mobile
+        output["address"] = data.shop_address
+        return JsonResponse(output)
+    except ELDERLY_CARE.models.medicine_orders.DoesNotExist:
+        return JsonResponse("invalid credintial")
+
+
+# This function would provide order details to shops
+def shopOrderView(request):
+    orderId = request.POST.get("orderId")
+    try:
+        data = medicine_orders.objects.get(order_id = orderId)
+        output = {}
+        output["orderId"] = orderId
+        output["medicine"] = data.order_item
+        output["quant."] = data.item_quantity
+        output["price"] = data.price
+        output["placedTime"] = data.order_date
+        output["status"] = data.order_status
+        output["deliveryTime"] = data.delivery_time
+        output["name"] = data.user_name
+        output["email"] = data.user_email
+        output["mobile_self"] = data.user_mobile_self
+        output["mobile_family"] = data.user_mobile_family
+        output["address"] = data.user_address
+        return JsonResponse(output)
+    except ELDERLY_CARE.models.medicine_orders.DoesNotExist:
+        return JsonResponse("invalid order")
+    
+
+# This function would provide order details to users
+def userOrderView(request):
+    orderId = request.POST.get("orderId")
+    try:
+        data = medicine_orders.objects.get(order_id = orderId)
+        output = {}
+        output["orderId"] = orderId
+        output["medicine"] = data.order_item
+        output["quant."] = data.item_quantity
+        output["price"] = data.price
+        output["placedTime"] = data.order_date
+        output["status"] = data.order_status
+        output["deliveryTime"] = data.delivery_time
+        output["name"] = data.user_name
+        output["email"] = data.user_email
+        output["mobile_self"] = data.user_mobile_self
+        output["mobile_family"] = data.user_mobile_family
+        output["address"] = data.user_address
+        return JsonResponse(output)
+    except ELDERLY_CARE.models.medicine_orders.DoesNotExist:
+        return JsonResponse("invalid order")
+    
+    
+# user can cancel oreder by using this fuction
+def orderCancelByUser(request):
+    orderId = request.POST.get("orderId")
+    try:
+        data = medicine_orders.objects.get(order_id = orderId)
+        if data.order_status != "successful":
+            data.order_status = "cancel by user"
+            data.save()
+            return JsonResponse("order canceld successful")
+        else:
+            return JsonResponse("order is already successful")
+    except ELDERLY_CARE.models.medicine_orders.DoesNotExist:
+        return JsonResponse("invalid order")
+    
+
+# shops can cancel oreder by using this fuction
+def orderCancelByShop(request):
+    orderId = request.POST.get("orderId")
+    try:
+        data = medicine_orders.objects.get(order_id = orderId)
+        if data.order_status != "successful":
+            data.order_status = "cancel by Shop"
+            data.save()
+            return JsonResponse("order canceld successful")
+        else:
+            return JsonResponse("order is already successful")
+    except ELDERLY_CARE.models.medicine_orders.DoesNotExist:
+        return JsonResponse("invalid order")
+    
+
+# after delivered medicines shop can make it successfull.
+def orderSuccessful(request):
+    orderId = request.POST.get("orderId")
+    try:
+        data = medicine_orders.objects.get(order_id = orderId)
+        if data.order_status == "inprogress":
+            data.order_status = "successful"
+            data.save()
+            return JsonResponse("order cancelled")
+        else:
+            return JsonResponse("order is already cancel")
+    except ELDERLY_CARE.models.medicine_orders.DoesNotExist:
+        return JsonResponse("invalid order")
+
+
+# if there is medicines anavailable then this function would be used
+def orderAnavailable(request):
+    orderId = request.POST.get("orderId")
+    try:
+        data = medicine_orders.objects.get(order_id = orderId)
+        if data.order_status == "pending":
+            data.order_status = "anavailable"
+            data.save()
+            return JsonResponse("changes successful")
+        else:
+            return JsonResponse("order is already cancel or successfull")
+    except ELDERLY_CARE.models.medicine_orders.DoesNotExist:
+        return JsonResponse("invalid order")
+    
+
+# shop can provide required information to user
+def orderInprogress(request):
+    orderId = request.POST.get("orderId")
+    price = request.POST.get("price")
+    time = request.POST.get("time")
+    try:
+        data = medicine_orders.objects.get(order_id = orderId)
+        if data.order_status == "pending" or data.order_status == "anavailable":
+            data.order_status = "inprogress"
+            data.price = price
+            data.delivery_time = time
+            data.save()
+            return JsonResponse("changes successful")
+        else:
+            return JsonResponse("order is already cancel or successfull")
+    except ELDERLY_CARE.models.medicine_orders.DoesNotExist:
+        return JsonResponse("invalid order")
     

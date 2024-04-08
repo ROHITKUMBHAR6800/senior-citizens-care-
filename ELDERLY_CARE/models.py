@@ -78,7 +78,7 @@ class Medical_shops(models.Model):
 # model for store data of medicines order made by users
 class medicine_orders(models.Model):
 
-    oder_id = models.BigAutoField(primary_key = True)
+    order_id = models.BigAutoField(primary_key = True)
     order_item = models.CharField(max_length = 100)
     item_quantity = models.IntegerField()
     price = models.IntegerField()
@@ -99,9 +99,12 @@ class medicine_orders(models.Model):
     
 
 # model for store data of appointment by elderly people 
-class appointment(models.Model):
+class appointments(models.Model):
 
+    appointment_id = models.BigAutoField(primary_key = True)
     user_name = models.CharField(max_length = 100)
+    user_gender = models.CharField(max_length = 10)
+    user_birth_date = models.DateField()
     user_email = models.EmailField()
     user_mobile = models.CharField(max_length = 13)
     user_address = models.CharField(max_length = 300)
@@ -109,11 +112,12 @@ class appointment(models.Model):
     entry_date = models.DateTimeField(default = timezone.now)
     ask_appointment_date = models.DateField()
     appointment_status = models.CharField(max_length = 20, default="pending")
-    appointment_time = models.DateTimeField(default=timezone.now)
+    given_appointment_time = models.DateTimeField(default=timezone.now)
     consultant_id = models.CharField(max_length = 100)
-    specility_type = models.CharField(max_length = 100)
+    consultant_name = models.CharField(max_length = 100)
+    consultant_gender = models.CharField(max_length = 10)
+    speciality_type = models.CharField(max_length = 100)
     hospital_id = models.CharField(max_length = 100)
     hospital_name = models.CharField(max_length=100)
     hospital_contact = models.CharField(max_length = 13)
     hospital_address = models.CharField(max_length = 300)
-

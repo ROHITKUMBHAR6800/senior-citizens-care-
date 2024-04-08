@@ -1,3 +1,39 @@
+Senior Citizens Care
+Senior Citizens Care is a web application built with Django to facilitate the management of appointments, medical orders, and user profiles for senior citizens, consultants, and medical shops.
+
+Features
+User Management: Allows senior citizens to create profiles, schedule appointments with consultants, and place medical orders.
+Consultant Dashboard: Enables consultants to manage appointments, view patient details, and update appointment status.
+Medical Shop Interface: Provides a platform for medical shops to receive and process medical orders placed by users.
+
+Installation
+Clone the repository:
+git clone https://github.com/ROHITKUMBHAR6800/senior-citizens-care-.git
+
+Install dependencies:
+cd senior-citizens-care
+pip install -r requirements.txt
+
+Run migrations:
+python manage.py migrate
+
+Start the development server:
+python manage.py runserver
+Access the application at http://localhost:8000.
+
+Configuration
+Database: Senior Citizens Care uses Django's default SQLite database for development. For production, configure a more robust database like PostgreSQL or MySQL.
+Time Zone: The application uses UTC time zone by default. To change it to Indian time zone, modify the TIME_ZONE setting in settings.py to 'Asia/Kolkata'.
+Internationalization: The application supports English language by default. For internationalization, follow Django's Internationalization documentation.
+
+Usage
+User Registration: Users can register on the platform by providing their details such as email, name, birth date, gender, and address.
+Appointment Scheduling: Senior citizens can schedule appointments with consultants specifying their illness type and preferred date.
+Medical Orders: Users can place medical orders specifying the required items, quantity, and delivery details.
+Consultant Management: Consultants can manage appointments, view patient details, and update appointment status.
+Medical Shop Interface: Medical shops can process incoming medical orders, update order status, and manage inventory.
+
+
 # senior-citizens-care-
 This repository contains project related to elderly people, how can use this web application for  various purpose like health, fitness, entertainment etc.
 

@@ -11,27 +11,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='appointments',
-            fields=[
-                ('appointment_id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('user_name', models.CharField(max_length=100)),
-                ('user_email', models.EmailField(max_length=254)),
-                ('user_mobile', models.CharField(max_length=13)),
-                ('user_address', models.CharField(max_length=300)),
-                ('illness_type', models.CharField(max_length=100)),
-                ('entry_date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('ask_appointment_date', models.DateField()),
-                ('appointment_status', models.CharField(default='pending', max_length=20)),
-                ('appointment_time', models.DateTimeField(default=django.utils.timezone.now)),
-                ('consultant_id', models.CharField(max_length=100)),
-                ('specility_type', models.CharField(max_length=100)),
-                ('hospital_id', models.CharField(max_length=100)),
-                ('hospital_name', models.CharField(max_length=100)),
-                ('hospital_contact', models.CharField(max_length=13)),
-                ('hospital_address', models.CharField(max_length=300)),
-            ],
-        ),
+        
         migrations.CreateModel(
             name='Consultant',
             fields=[
